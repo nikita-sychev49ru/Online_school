@@ -8,7 +8,8 @@
         "description": null,
         "preview": "images/placeholder.png",
         "video_url": null,
-        "course": 6
+        "course": 6,
+        "owner": null
     }
 },
 {
@@ -20,7 +21,8 @@
         "description": null,
         "preview": "images/placeholder.png",
         "video_url": null,
-        "course": 5
+        "course": 5,
+        "owner": null
     }
 },
 {
@@ -32,7 +34,8 @@
         "description": null,
         "preview": "images/placeholder.png",
         "video_url": null,
-        "course": 6
+        "course": 6,
+        "owner": null
     }
 },
 {
@@ -44,7 +47,8 @@
         "description": null,
         "preview": "images/placeholder.png",
         "video_url": null,
-        "course": 7
+        "course": 7,
+        "owner": null
     }
 },
 {
@@ -56,7 +60,60 @@
         "description": null,
         "preview": "images/placeholder.png",
         "video_url": null,
-        "course": 8
+        "course": 8,
+        "owner": null
+    }
+},
+{
+    "model": "studies.lesson",
+    "pk": 10,
+    "fields": {
+        "title": "lesson_4.2",
+        "order": 2,
+        "description": null,
+        "preview": "images/placeholder.png",
+        "video_url": null,
+        "course": 8,
+        "owner": 1
+    }
+},
+{
+    "model": "studies.lesson",
+    "pk": 11,
+    "fields": {
+        "title": "lesson_5.1",
+        "order": 1,
+        "description": null,
+        "preview": "images/placeholder.png",
+        "video_url": null,
+        "course": 9,
+        "owner": 1
+    }
+},
+{
+    "model": "studies.lesson",
+    "pk": 12,
+    "fields": {
+        "title": "lesson_5.3",
+        "order": 1,
+        "description": null,
+        "preview": "images/placeholder.png",
+        "video_url": null,
+        "course": 5,
+        "owner": 1
+    }
+},
+{
+    "model": "studies.lesson",
+    "pk": 13,
+    "fields": {
+        "title": "lesson_5.4",
+        "order": 4,
+        "description": null,
+        "preview": "images/placeholder.png",
+        "video_url": null,
+        "course": 5,
+        "owner": 1
     }
 }
 ]
