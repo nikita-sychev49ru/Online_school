@@ -1,6 +1,8 @@
-from tkinter.constants import CASCADE
-
 from django.db import models
+from django.db.models import CASCADE
+
+from config.settings import AUTH_USER_MODEL
+
 
 class Course(models.Model):
     """модель обучающего курса"""
@@ -13,6 +15,7 @@ class Course(models.Model):
         null=True,
     )
     description = models.TextField(blank=True, null=True, verbose_name='описание курса')
+    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=CASCADE, blank=True, null=True, verbose_name='владелец курса')
 
     class Meta:
         verbose_name = 'курс'
@@ -52,6 +55,12 @@ class Lesson(models.Model):
         related_name='lessons',
         verbose_name='курс',
     )
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=CASCADE,
+        blank=True,
+        null=True,
+        verbose_name='владелец урока')
 
     class Meta:
         verbose_name = 'урок'

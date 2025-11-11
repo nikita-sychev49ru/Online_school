@@ -12,7 +12,7 @@ class LessonSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     """сериализатор для курса"""
     # получаем уроки, включенные в курс
-    lessons = LessonSerializer(many=True)
+    lessons = LessonSerializer(many=True, read_only=True)
 
     # получаем количество уроков в курсе
     lessons_count = serializers.SerializerMethodField()
