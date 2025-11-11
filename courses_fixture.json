@@ -1,0 +1,38 @@
+[
+{
+    "model": "studies.course",
+    "pk": 5,
+    "fields": {
+        "title": "course_1",
+        "preview": "images/placeholder.png",
+        "description": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 6,
+    "fields": {
+        "title": "course_2",
+        "preview": "images/placeholder.png",
+        "description": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 7,
+    "fields": {
+        "title": "course_3",
+        "preview": "images/placeholder.png",
+        "description": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 8,
+    "fields": {
+        "title": "course_4",
+        "preview": "images/placeholder.png",
+        "description": null
+    }
+}
+]
