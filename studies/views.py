@@ -29,7 +29,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonCreateAPIView(generics.CreateAPIView):
     """представление для создания объекта Урок"""
     serializer_class = LessonSerializer
-    permission_classes = (~IsModer,)
+    permission_classes = (IsAuthenticated & ~IsModer,)
 
     def perform_create(self, serializer):
         lesson = serializer.save()
@@ -61,4 +61,4 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     """представление для удаления объекта Урок"""
     queryset = Lesson.objects.all()
-    permission_classes = (IsOwner|~IsModer,)
+    permission_classes = (IsOwner & ~IsModer,)
