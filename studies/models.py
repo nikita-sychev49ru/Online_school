@@ -71,3 +71,22 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f'{self.title} (курс: {self.course})'
+
+
+class Subscribe(models.Model):
+    """модель подписки на обучающий курс"""
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=CASCADE, related_name='subscriptions', blank=True,
+                             verbose_name='пользователь')
+    course = models.ForeignKey(Course, on_delete=CASCADE, related_name='subscriptions', blank=True, verbose_name='курс')
+    created_at = models.DateTimeField(auto_now_add=True,verbose_name='дата создания')
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+        ordering = ['-created_at' ]
+        db_table = 'subscribes'
+        unique_together = [['user', 'course']]
+
+
+    def __str__(self):
+        return f'Подписка пользователя {self.user} на курс {self.course}'

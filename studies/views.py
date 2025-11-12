@@ -1,8 +1,12 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from studies.models import Course, Lesson
-from studies.serializers import CourseSerializer, LessonSerializer
+from studies.models import Course, Lesson, Subscribe
+from studies.paginators import StudiesPagination
+from studies.serializers import CourseSerializer, LessonSerializer, SubscribeSerializer
 from users.permissions import IsModer, IsOwner
 
 
@@ -10,6 +14,13 @@ class CourseViewSet(viewsets.ModelViewSet):
     """вьюсет представлений для объектов модели Курс"""
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    pagination_class = StudiesPagination
+    def get(self, request):
+        queryset = Course.objects.all()
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = CourseSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
+
 
     def perform_create(self, serializer):
         course = serializer.save()
@@ -29,7 +40,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonCreateAPIView(generics.CreateAPIView):
     """представление для создания объекта Урок"""
     serializer_class = LessonSerializer
-    permission_classes = (IsAuthenticated & ~IsModer,)
+    permission_classes = (~IsModer,)
 
     def perform_create(self, serializer):
         lesson = serializer.save()
@@ -38,7 +49,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
-    """представление для просмотра списка объектов модели Урок"""
+    """представление для просмотра списка объектов Урок"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = (IsOwner|IsModer,)
@@ -48,7 +59,8 @@ class LessonListAPIView(generics.ListAPIView):
     """представление для просмотра объекта Урок"""
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = (IsOwner|IsModer,)
+    permission_classes = (IsOwner | IsModer,)
+    pagination_class = StudiesPagination
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
@@ -61,4 +73,26 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     """представление для удаления объекта Урок"""
     queryset = Lesson.objects.all()
-    permission_classes = (IsOwner & ~IsModer,)
+    permission_classes = (IsOwner|~IsModer,)
+
+
+class SubscribeAPIView(APIView):
+    """контроллер для управления подписками"""
+    serializer_class = SubscribeSerializer
+    queryset = Subscribe.objects.all()
+
+    def post(self, request):
+        user = request.user
+        course_id = request.data.get('course')
+        course = get_object_or_404(Course, id=course_id)
+        subscribe = Subscribe.objects.filter(user=user, course=course).first()
+        # Если подписка у пользователя на этот курс есть - удаляем ее
+        if subscribe:
+            subscribe.delete()
+            message = 'подписка удалена'
+        # Если подписки у пользователя на этот курс нет - создаем ее
+        else:
+            Subscribe.objects.create(user=user, course=course)
+            message = 'подписка добавлена'
+        # Возвращаем ответ в API
+        return Response({"message": message})
