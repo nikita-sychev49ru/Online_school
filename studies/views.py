@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,6 +26,21 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
+    def update(self, request, *args, **kwargs):
+        # для обновления курса (PUT)
+        instance = self.get_object()
+        response = super().update(request, *args, **kwargs)
+
+        # отправка сообщения подписчикам об обновлении курса
+        if response.status_code == status.HTTP_200_OK:
+            from studies.tasks import send_course_update_email
+            send_course_update_email.delay(instance.pk)
+        return response
+
+    def partial_update(self, request, *args, **kwargs):
+        # для частичного обновления курса (PATCH)
+        return self.update(request, *args, **kwargs)
 
     def get_permissions(self):
         if self.action == 'create':
