@@ -5,10 +5,44 @@ from .models import Payment, User
 
 class PaymentSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Платеж"""
+    link = serializers.SerializerMethodField()
+
     class Meta:
         model = Payment
+        read_only_fields = [
+            'public_id', 'status', 'payment_date', 'paid_date', 'stripe_session_id', 'link'
+        ]
         fields = '__all__'
 
+    def get_link(self, obj):
+        """Генерирует URL для оплаты через Stripe Checkout"""
+        if obj.stripe_session_id:
+            return f"https://checkout.stripe.com/pay/{obj.stripe_session_id}"
+        return None
+
+
+class CreatePaymentSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания платежа"""
+    link = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = ['paid_course', 'paid_lesson', 'payment_method', 'link']
+        read_only_fields = ['link']
+
+    def validate(self, data):
+        """Проверяем, что в теле POST-запроса указан курс или урок, который хотим оплатить"""
+        if not data.get('paid_course') and not data.get('paid_lesson'):
+            raise serializers.ValidationError('Должен быть указан курс или урок')
+        if data.get('paid_course') and data.get('paid_lesson'):
+            raise serializers.ValidationError('Можно указать только курс или только урок')
+        return data
+
+    def get_link(self, obj):
+        """Генерирует URL для оплаты через Stripe Checkout"""
+        if obj.stripe_session_id:
+            return f"https://checkout.stripe.com/pay/{obj.stripe_session_id}"
+        return None
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации"""

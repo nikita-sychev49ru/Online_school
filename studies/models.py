@@ -15,6 +15,8 @@ class Course(models.Model):
         null=True,
     )
     description = models.TextField(blank=True, null=True, verbose_name='описание курса')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=999.99, verbose_name='стоимость курса')
+    is_available = models.BooleanField(default=False, verbose_name='доступность')
     owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=CASCADE, blank=True, null=True, verbose_name='владелец курса')
 
     class Meta:
@@ -36,6 +38,8 @@ class Lesson(models.Model):
         verbose_name='порядковый номер'
     )
     description = models.TextField(blank=True, null=True, verbose_name='описание урока')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=99.99, verbose_name='стоимость урока')
+
     preview = models.ImageField(
         upload_to='images/',
         default='images/placeholder.png',
@@ -55,6 +59,7 @@ class Lesson(models.Model):
         related_name='lessons',
         verbose_name='курс',
     )
+    is_available = models.BooleanField(default=False, verbose_name='доступность')
     owner = models.ForeignKey(
         AUTH_USER_MODEL,
         on_delete=CASCADE,

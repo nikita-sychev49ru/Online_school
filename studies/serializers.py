@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from studies.models import Course, Lesson, Subscribe
 from studies.validators import VideoUrlValidator
+from users.models import Payment
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -14,6 +15,13 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     """сериализатор для курса"""
+    # получаем признак доступности курса для пользователя
+    is_available = serializers.SerializerMethodField()
+
+    def get_is_available(self, obj):
+        request = self.context.get('request')
+        return Payment.objects.filter(user=request.user, paid_course=obj).exists()
+
     # получаем признак подписки пользователя на курс
     is_subscribed = serializers.SerializerMethodField()
 
@@ -33,7 +41,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['title', 'preview', 'description', 'is_subscribed', 'lessons_count', 'lessons']
+        fields = '__all__'
         validators = [VideoUrlValidator(field=['title', 'description']), ]
 
 
