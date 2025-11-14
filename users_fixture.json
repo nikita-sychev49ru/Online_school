@@ -1,0 +1,90 @@
+[
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$j6RZPiyxkWjqnVW7Yr040G$FDU6GsTjKIJJxFljeXiUiMtBBTSB135Wu/8qStgMiw4=",
+        "last_login": "2025-09-05T17:42:32Z",
+        "is_superuser": true,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-09-05T17:41:30Z",
+        "username": "Admin",
+        "email": "skyappstore@yandex.ru",
+        "phone": null,
+        "city": null,
+        "avatar": "images/placeholder.png",
+        "groups": [
+            1
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$5IjLaeG3QuLxZ9vnslavLe$dlEPSbOcW4xeRUM6PVlw9me65a75SI05roov1Z3gei4=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-09-05T17:43:18Z",
+        "username": "Oксана",
+        "email": "o.niklashkova@gmail.com",
+        "phone": null,
+        "city": null,
+        "avatar": "images/placeholder.png",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$5TUxGXLcrGJ2AdS8rVhCWv$jhKIXfQ936dKfDxlXv5p8ylmbBCgYxXlBV4041sv2+E=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-09-05T17:50:00Z",
+        "username": "BasicUser",
+        "email": "email_us@email.com",
+        "phone": null,
+        "city": null,
+        "avatar": "images/placeholder.png",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$7NtpAg3voOIwQTFTrqCZwl$ZuNZmxSJSBs6J0T4Qizd4G730mQWWz8dyGDRsPJMIs4=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-09-07T17:36:03Z",
+        "username": "Moderator",
+        "email": "skyappstore.a@gmail.com",
+        "phone": null,
+        "city": null,
+        "avatar": "images/placeholder.png",
+        "groups": [
+            1
+        ],
+        "user_permissions": []
+    }
+}
+]
