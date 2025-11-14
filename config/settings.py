@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
 
     'users',
     'studies',
@@ -141,3 +142,35 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SUCCESS_URL = 'http://127.0.0.1:8000/users/payment/success/'
 STRIPE_CANCEL_URL = 'http://127.0.0.1:8000/users/payment/cancel/'
+
+CASHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.getenv("LOCATION"),
+    }
+}
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30*60
+
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = True if os.getenv("EMAIL_USE_TLS") == "True" else False
+EMAIL_USE_SSL = True if os.getenv("EMAIL_USE_SSL") == "True" else False
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "fullhp3248@mail.ru")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CELERY_BEAT_SCHEDULE = {
+    'last_login_check': {
+        'task': 'users.tasks.last_login_check',
+        'schedule': timedelta(minutes=10),
+    },
+}
