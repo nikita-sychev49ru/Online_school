@@ -1,6 +1,6 @@
 import os
 import random
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 
 from django.core.management import BaseCommand, call_command
 
@@ -25,47 +25,49 @@ class Command(BaseCommand):
             try:
                 # случайный пользователь
                 user = random.choice(users)
-
                 # случайная дата (последние 30 дней)
-                payment_date = date.today() - timedelta(days=random.randint(0, 30))
-
-                # случайная сумма (от 1000 до 10000)
-                amount = round(random.uniform(1000, 10000), 2)
-
+                payment_date = datetime.now() - timedelta(days=random.randint(0, 30))
                 # случайный метод оплаты
                 payment_method = random.choice(payment_methods)
-
                 # создаем объект модели платеж
                 payment = Payment.objects.create(
                     user=user,
+                    amount = 0.00,
                     payment_date=payment_date,
-                    amount=amount,
                     payment_method=payment_method
                 )
 
                 # добавляем случайный курс или урок
                 has_course_or_lesson = False
+                amount = 0.00
 
-                while not has_course_or_lesson:
-                    # проверка, что в оплате есть хотя бы один объект расчета - курс или урок
+                if courses and random.choice([True, False]):
+                    paid_course = random.choice(courses)
+                    payment.paid_course = Course.objects.get(pk=paid_course.pk)
+                    amount = paid_course.price
+                    Course.objects.filter(pk=paid_course.pk).update(is_available=True)
+                    has_course_or_lesson = True
 
-                    if courses.exists() and random.choice([True, False]):
-                        course = random.choice(courses)
-                        payment.paid_course.add(course)
-                        has_course_or_lesson = True
+                if lessons.exists() and random.choice([True, False]):
+                    paid_lesson = random.choice(lessons)
+                    payment.paid_lesson = Lesson.objects.get(pk=paid_lesson.pk)
+                    amount = paid_lesson.price
+                    Lesson.objects.filter(pk=paid_lesson.pk).update(is_available=True)
+                    has_course_or_lesson = True
 
-                    if lessons.exists() and random.choice([True, False]):
-                        lesson = random.choice(lessons)
-                        payment.paid_lesson.add(lesson)
-                        has_course_or_lesson = True
+                if has_course_or_lesson:
+                    payment.amount = amount
+                    payment.save()
+                    created_count += 1
 
-                created_count += 1
-
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f'Создан платеж #{created_count}: {user.username} - {amount} руб.'
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            f'Создан платеж #{created_count}: {user.username} - {payment.amount} руб.'
+                        )
                     )
-                )
+
+                else:
+                    payment.delete()
 
             except Exception as e:
                 self.stdout.write(
