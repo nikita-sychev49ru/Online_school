@@ -6,92 +6,130 @@
 В проекте представлено веб-приложение, обеспечивающее доступ пользователей к обучающим курсам. 
 
 
-## Точка входа
-Для перехода в веб-приложение запустите команду `python manage.py runserver`  и нажмите на ссылку в консоли `http://127.0.0.1:8000/`
+## Технологии
+* Django - веб-фреймворк
+
+* PostgreSQL - база данных
+
+* Redis - кеш и брокер сообщений
+
+* Celery - асинхронные задачи
+
+* Celery Beat - периодические задачи
+
+* Docker - контейнеризация
+
+## Предварительные требования
+- Docker Desktop (для Windows/Mac) или Docker Engine + Docker Compose (для Linux)
+
+- Git
+
+## Быстрый запуск
+Клонируйте репозиторий:
+
+```
+git clone https://github.com/nikita-sychev49ru/Online_school.git
+cd Online_school
+```
+Создайте файл окружения:
+
+```
+cp .env.example .env
+```
+Отредактируйте .env файл, указав свои настройки (секретные ключи, пароли БД и т.д.)
+* SECRET_KEY=...
+* DEBUG=...
+#### настройки базы данных
+* POSTGRES_DB=...
+* POSTGRES_USER=...
+* POSTGRES_PASSWORD=...
+* POSTGRES_HOST=...
+* POSTGRES_PORT=...
+
+Запустите проект:
+```
+docker-compose up -d --build
+```
+Проверьте статус сервисов:
+```
+docker-compose ps
+```
+## Проверка работоспособности сервисов
+## *1. Django приложение (web)*
+### Проверить логи
+```
+docker-compose logs web
+```
+
+### Проверить доступность
+Введите в терминале:
+```
+curl http://localhost:8000
+```
+или открыть в браузере: http://localhost:8000
+
+### Выполнить команду в контейнере
+```
+docker-compose exec web python manage.py check
+```
+
+## *2. База данных (db)*
+
+### Проверить здоровье БД
+```
+docker-compose logs db
+```
+### Проверить подключение к БД
+```
+docker-compose exec db pg_isready -U postgres
+```
+### Подключиться к БД
+```
+docker-compose exec db psql -U postgres -d online_school
+```
+Выйти из подключения:
+```
+online_school-# /q
+```
+
+## *3. Redis*
+
+### Проверить логи Redis
+```
+docker-compose logs redis
+```
+### Проверить подключение к Redis
+```
+docker-compose exec redis redis-cli ping
+```
+Должен ответить: PONG
+
+
+## *4. Celery Worker*
+
+### Проверить логи Celery
+```
+docker-compose logs celery
+```
+### Проверить подключения воркера
+```
+docker-compose exec celery celery -A config.celery_app inspect ping
+```
+Должен ответить: pong
+
+
+## *5. Celery Beat*
+
+### Проверить логи Beat на наличие ошибок
+```
+docker-compose logs beat --tail=50
+```
 
 
 ## Тестирование
 
-В разработке
+В рамках проекта реализовано тестирование эндпойнтов с помощью unittest. 
 
-## Установка
-
-Для установки и запуска проекта необходимо выполнить следующие шаги:
-
-1.  **Клонируйте репозиторий:**
-
-    ```
-    https://github.com/nikita-sychev49ru/Online_school.git
-    ```
-
-2.  **Перейдите в папку проекта:**
-
-    ```
-    cd Online_school
-    ```
-
-3.  **Установите зависимости с помощью Poetry:**
-
-    ```
-    poetry install
-    ```
-    
-4.  **Создайте базу данных и пропишите настройки для доступа к ней в файле .env (образец заполнения в файле .env.sample)**
-
-5.  **Запустите команду запуска сервера, чтобы перейти в веб-приложение**
-    ```
-    python manage.py runserver
-    ```
-
-## Использование
-
-Для начального заполнения базы данных воспользуйтесь фикстурами
-~~~
-python manage.py loaddata users_fixture.json --format json
-python manage.py loaddata courses_fixture.json --format json
-python manage.py loaddata lessons_fixture.json --format json
-~~~
-
-Для создания платежей воспользуйтесь командой
-```
-python manage.py load_payments
-```
-Одним запуском создается 3 случайных платежа.
-Платежи можно сортировать по возрастанию и убыванию даты совершения.
-Список платежей можно фильтровать по id оплаченного курса или урока, а также по типу платежа - наличные/перевод на счет.
-Пример запроса в адресной строке с фильтрацией и сортировкой по убыванию даты:
-```
-http://127.0.0.1:8000/users/payments/?payment_method=наличные&ordering=-payment_date
-```
-Пример ответа:
-~~~
-[
-    {
-        "id": 11,
-        "payment_date": "2025-09-06",
-        "amount": 1349.74,
-        "payment_method": "наличные",
-        "user": 4,
-        "paid_course": [
-            5, 6, 7, 8
-        ],
-        "paid_lesson": [
-            6, 5, 7, 8, 9
-        ]
-    },
-    {
-        "id": 1,
-        "payment_date": "2025-09-05",
-        "amount": 9331.64,
-        "payment_method": "наличные",
-        "user": 1,
-        "paid_course": [],
-        "paid_lesson": [
-            8
-        ]
-    }
-]
-~~~
 
 ## Зависимости
 
