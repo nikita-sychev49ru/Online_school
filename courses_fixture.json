@@ -1,0 +1,62 @@
+[
+{
+    "model": "studies.course",
+    "pk": 5,
+    "fields": {
+        "title": "course_1",
+        "preview": "images/placeholder.png",
+        "description": null,
+        "owner": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 6,
+    "fields": {
+        "title": "course_2",
+        "preview": "images/placeholder.png",
+        "description": null,
+        "owner": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 7,
+    "fields": {
+        "title": "course_3",
+        "preview": "images/placeholder.png",
+        "description": null,
+        "owner": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 8,
+    "fields": {
+        "title": "course_4",
+        "preview": "images/placeholder.png",
+        "description": null,
+        "owner": null
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 9,
+    "fields": {
+        "title": "course_5",
+        "preview": "images/placeholder.png",
+        "description": null,
+        "owner": 1
+    }
+},
+{
+    "model": "studies.course",
+    "pk": 10,
+    "fields": {
+        "title": "course_6",
+        "preview": "images/placeholder.png",
+        "description": null,
+        "owner": 4
+    }
+}
+]
