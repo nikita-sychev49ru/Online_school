@@ -19,12 +19,93 @@
 
 * Docker - контейнеризация
 
+* CI/CD - деплой на сервер
+
 ## Предварительные требования
 - Docker Desktop (для Windows/Mac) или Docker Engine + Docker Compose (для Linux)
 
 - Git
 
-## Быстрый запуск
+## Запуск сервера с помощью CI/CD на виртуальной машине
+#### Подготовка сервера.
+Создайте виртуальную машину, подключитесь к ней.
+В рамках учебного проекта сервер развернут на базе Яндекс.Cloud по адресу: http://158.160.12.70/
+
+```
+# Подключение к серверу
+ssh username@server_ip
+
+# Установка Docker
+sudo apt update && sudo apt install docker.io -y
+
+# Установка Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Добавление пользователя в группу docker
+sudo usermod -aG docker $USER
+# Перезапустите сессию SSH
+```
+#### Настройка окружения
+Создайте на виртуальной машине директорию для развертывания проекта
+```
+mkdir ~/myproject && cd ~/myproject
+```
+В созданной директории создайте файл .env с переменными, необходимыми для развертывания проекта:
+```
+cat > .env << 'EOF'
+SECRET_KEY=your-secret-key
+DEBUG=False
+ALLOWED_HOSTS=your-server-ip,localhost,127.0.0.1
+STATIC_ROOT=/app/staticfiles
+POSTGRES_PASSWORD=your-password
+POSTGRES_USER=postgres
+POSTGRES_DB=postgres
+DATABASE_URL=postgres://postgres:your-password@db:5432/postgres
+EOF
+```
+#### Настройка CI/CD и автоматический деплой
+
+Склонируйте репозиторий проекта 
+```
+git clone https://github.com/nikita-sychev49ru/Online_school.git
+```
+В личном кабинете на GitHub в репозитории с проектом в GitHub Secrets добавьте:
+
+* DOCKER_HUB_USERNAME - ваш логин Docker Hub
+
+* DOCKER_HUB_ACCESS_TOKEN - токен Docker Hub
+
+* SSH_KEY - приватный SSH ключ для доступа к серверу, указанный при создании виртуальной машины
+
+* SSH_USER - пользователь сервера, указанный при создании виртуальной машины (например, user)
+
+* SERVER_IP - IP адрес сервера
+
+Сделайте в репозитории push или pull-request, это автоматически запустит тестирование, создание контейнера и деплой на ваш сервер.
+
+#### Клонирование проекта и запуск контейнера (ручной деплой, если нужно)
+```
+# Копирование файлов проекта
+git clone https://github.com/nikita-sychev49ru/Online_school.git ~/myproject
+
+# Запуск приложения
+cd ~/myproject && docker-compose up -d
+
+# Проверка контейнеров
+docker-compose ps
+
+# Просмотр логов
+docker-compose logs web
+
+# Проверка доступности
+curl http://your-server-ip/
+```
+#### Проверка работоспособности
+Перейдите по IP-адресу вашего сервера
+
+
+## Быстрый запуск с помощью Docker на локальной машине
 Клонируйте репозиторий:
 
 ```
