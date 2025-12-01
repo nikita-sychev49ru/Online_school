@@ -1,4 +1,3 @@
-from django.template.context_processors import request
 from rest_framework import serializers
 
 from studies.models import Course, Lesson, Subscribe
@@ -8,13 +7,18 @@ from users.models import Payment
 
 class LessonSerializer(serializers.ModelSerializer):
     """сериализатор для урока"""
+
     class Meta:
         model = Lesson
         fields = '__all__'
-        validators = [VideoUrlValidator(field=['title', 'description','video_url']),]
+        validators = [
+            VideoUrlValidator(field=['title', 'description', 'video_url']),
+        ]
+
 
 class CourseSerializer(serializers.ModelSerializer):
     """сериализатор для курса"""
+
     # получаем признак доступности курса для пользователя
     is_available = serializers.SerializerMethodField()
 
@@ -42,11 +46,14 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
-        validators = [VideoUrlValidator(field=['title', 'description']), ]
+        validators = [
+            VideoUrlValidator(field=['title', 'description']),
+        ]
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
     """сериализатор для подписки на курс"""
+
     class Meta:
         model = Subscribe
         fields = '__all__'

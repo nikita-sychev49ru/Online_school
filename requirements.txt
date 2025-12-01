@@ -42,3 +42,5 @@ djangorestframework-simplejwt==5.5.1
 coverage==7.10.6
 drf-yasg==1.21.10
 django-cors-headers==4.8.0
+gunicorn==23.0.0
+whitenoise==6.11.0

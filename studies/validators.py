@@ -5,7 +5,8 @@ from rest_framework import serializers
 
 
 class VideoUrlValidator:
-    """ Проверка содержания материалов на наличие сторонних ссылок """
+    """Проверка содержания материалов на наличие сторонних ссылок"""
+
     def __init__(self, field):
         self.field = field
 

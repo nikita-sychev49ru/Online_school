@@ -5,13 +5,12 @@ from .models import Payment, User
 
 class PaymentSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Платеж"""
+
     link = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
-        read_only_fields = [
-            'public_id', 'status', 'payment_date', 'paid_date', 'stripe_session_id', 'link'
-        ]
+        read_only_fields = ['public_id', 'status', 'payment_date', 'paid_date', 'stripe_session_id', 'link']
         fields = '__all__'
 
     def get_link(self, obj):
@@ -23,6 +22,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class CreatePaymentSerializer(serializers.ModelSerializer):
     """Сериализатор для создания платежа"""
+
     link = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -44,8 +44,10 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
             return f"https://checkout.stripe.com/pay/{obj.stripe_session_id}"
         return None
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации"""
+
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)
 
@@ -69,6 +71,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для работы с пользователями"""
+
     payments = PaymentSerializer(many=True, read_only=True)
 
     class Meta:

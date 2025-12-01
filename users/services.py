@@ -1,5 +1,5 @@
 import stripe
-from config.settings import STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_SUCCESS_URL, STRIPE_CANCEL_URL
+from config.settings import STRIPE_SECRET_KEY, STRIPE_SUCCESS_URL, STRIPE_CANCEL_URL
 
 stripe.api_key = STRIPE_SECRET_KEY
 
@@ -38,19 +38,17 @@ class PaymentSessionService:
         product = PaymentSessionService.create_product_for_item(item)
 
         # Создаем цену
-        price = PaymentSessionService.create_price(
-            amount=payment.amount,
-            currency='rub',
-            product_id=product.id
-        )
+        price = PaymentSessionService.create_price(amount=payment.amount, currency='rub', product_id=product.id)
 
         # Создаем сессию оплаты
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
-            line_items=[{
-                'price': price.id,
-                'quantity': 1,
-            }],
+            line_items=[
+                {
+                    'price': price.id,
+                    'quantity': 1,
+                }
+            ],
             mode='payment',
             success_url=STRIPE_SUCCESS_URL,
             cancel_url=STRIPE_CANCEL_URL,
@@ -59,8 +57,8 @@ class PaymentSessionService:
                 'payment_id': str(payment.public_id),
                 'user_id': str(payment.user.id),
                 'item_type': 'course' if payment.paid_course else 'lesson',
-                'item_id': str(item.id)
-            }
+                'item_id': str(item.id),
+            },
         )
 
         return checkout_session
@@ -76,7 +74,7 @@ class PaymentSessionService:
             paid_course=payment_data.get('paid_course'),
             paid_lesson=payment_data.get('paid_lesson'),
             amount=payment_data.get('amount', 0),
-            payment_method=payment_data.get('payment_method', Payment.STRIPE)
+            payment_method=payment_data.get('payment_method', Payment.STRIPE),
         )
 
         # Если это онлайн-оплата через Stripe

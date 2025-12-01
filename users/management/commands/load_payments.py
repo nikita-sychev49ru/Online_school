@@ -1,8 +1,7 @@
-import os
 import random
 from datetime import datetime, timedelta
 
-from django.core.management import BaseCommand, call_command
+from django.core.management import BaseCommand
 
 from studies.models import Course, Lesson
 from users.models import User, Payment
@@ -31,10 +30,7 @@ class Command(BaseCommand):
                 payment_method = random.choice(payment_methods)
                 # создаем объект модели платеж
                 payment = Payment.objects.create(
-                    user=user,
-                    amount = 0.00,
-                    payment_date=payment_date,
-                    payment_method=payment_method
+                    user=user, amount=0.00, payment_date=payment_date, payment_method=payment_method
                 )
 
                 # добавляем случайный курс или урок
@@ -61,21 +57,13 @@ class Command(BaseCommand):
                     created_count += 1
 
                     self.stdout.write(
-                        self.style.SUCCESS(
-                            f'Создан платеж #{created_count}: {user.username} - {payment.amount} руб.'
-                        )
+                        self.style.SUCCESS(f'Создан платеж #{created_count}: {user.username} - {payment.amount} руб.')
                     )
 
                 else:
                     payment.delete()
 
             except Exception as e:
-                self.stdout.write(
-                    self.style.ERROR(f'Ошибка при создании платежа: {e}')
-                )
+                self.stdout.write(self.style.ERROR(f'Ошибка при создании платежа: {e}'))
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f'Успешно создано {created_count} платежей из {count} запланированных'
-            )
-        )
+        self.stdout.write(self.style.SUCCESS(f'Успешно создано {created_count} платежей из {count} запланированных'))
