@@ -78,36 +78,17 @@ jobs:
 
     steps:
       - name: Deploy to server
-        env:
-          SSH_PRIVATE_KEY: |
-            -----BEGIN RSA PRIVATE KEY-----
-            MIIEpAIBAAKCAQEAuQtIj/sNJSAMhS3+SbN2NjZSvCHuDmDflcj8WiaeGzgDuP8T
-            D3tbwPFUnqdDRl6MGUX9a7wVkR3Hq1k6hhza4CEkyV5gy0sVBH81cJD2/klJDXp8
-            7fajIJ46NdY+mEQs5ov7lykBZfVp+4KufyEztitEgx1UTDbVd2FQy8HINDHXWrma
-            fpsoa1dxdN9yPRuHzU74xaZ28F51JhQ5PjPRhReXaFIqaUe7ytqC57bCaz8mO3gT
-            FdvtragymqwotS3lppueVz9h8nbWP9oaoHlhVsMifg9sDYdmJqyxnvz/AdyX/aSQ
-            2cYO2eBMAKReaNnB4d7d0fT/5r7E7DWRy4ThPwIDAQABAoIBAA/cbTxWLxLDE/+o
-            aRcFKHlOH7pbiC24VQHgR+0sSToZC4ykZIxbrQo1RWUR/jy+ZvDVpHrDFPAq5s4D
-            qHYNbB9xB9ew3MggJ+2KP9jlvB4gxv++Q44cKXBmz6OEuTnRAi5Cym5zB9km944k
-            7fMcs/OF8unwLiUYQCTq9QN6GUCL7cXCMQM9bY2nfkgnmIvgaMa+npTrEeQ1whSF
-            m8zP72kHYOfxJ+VMf2UWm/zcHTUJsz6FOdOEsNbmuO915NSNnhGmQh92Rgfqkxp+
-            NpP/LWkO5SUXv5vuC5fzhRvv34HnyFaMxPskp0ZC8iRDha0PbXsZ3zKdjnMg4qvF
-            W70rBqkCgYEA5YdhMpVlLJGSxpAZl5Umaiu/0ZndDpwiYYOl3w46fZ82EqEoeTXy
-            wTqcfW390r1khmRRwLj7WZLnMYqJm3qTBimPstBHD8CU9a2NJYxjyjIeYM6c/L0c
-            ujDcFV0/csY+eOUu+FEGO4ilQsla9lEq2+iH7c75sqyHf8kexGp4lOcCgYEAzmKI
-            p3bOLjQuQq/S7JEsbtsfCAVc3S9zjBdKoc6k/KElN/mKLNyi5djcYVO1+JTcr17R
-            itCyiN3po5BhysyHS1hM+/f4XfGZMG7geGJde/i4nd3MaEPgnFRHu4VkhpG8O76/
-            CJOcsXvr4c89Gt4B3Cy6hXFBBg75x6uqqOXJbekCgYEAx8Ucg7ojZLcO2GNy4sud
-            s6qAOR2BmMWr5tN9+rWXkt6PYYeCgnzB3Av3R/QDhvfwFkgaH3Lg0QVa03OQcRIu
-            BJ8HwsokD0G+ZFW5E4UtFT6p0fgCCrdN2X/NDYsrPentVaujRdy/X/F+ZLJ7yQa8
-            Fso8BG6wRSKEjGOvs6Q3buECgYEAoQCxRqMiGV1PsWpki3R9S0XZoXI9jbeU1nbd
-            G/mPMB2uYUpkhrbgxZo14h9h2DiZKJ45rac9gBROTfE2uPRxn0+VTwOVWAQ/007M
-            Al4KO8o+i7kZ20UIliwRgbKAR5KtW5ZkhRZSqQrZa2E2dB05KkAiijNd3JIWPbQo
-            AHayevECgYAcIWDrEnAH/k28ysxCfW9J1x0TXkoDMRJs7nBJ4XSpvfpl3o+cIls8
-            nPonOP1cKc36pPey4EWzGF+dFJ5HQNnbRIqZZACUhDNI2qtM+m9HktM3pHU2E9/i
-            Mk2N9SheQ9jDiXCL6EYg+0kII93hy1+kc17uDPLfCjdioz5Eiel1GA==
-            -----END RSA PRIVATE KEY-----
-        run: |
-          echo "$SSH_PRIVATE_KEY" > /tmp/deploy_key
-          chmod 600 /tmp/deploy_key
-          ssh -i /tmp/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "echo Connected"
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script_stop: true
+          script: |
+            echo "Deployment started..."
+            docker stop online_work || true
+            docker rm online_work || true
+            docker run -d --name online_work -p 80:8000 \
+             --env-file ~/myproject/.env \
+             ***/online_work:6202f4d73c2c3917f3c66446bd54f3b682f9313f
